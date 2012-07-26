@@ -1,0 +1,12 @@
+
+src_configure(){
+  hconf --enable-arch --enable-partx --enable-write
+}
+
+src_compile(){
+  make
+}
+
+install(){
+  make DESTDIR=${D} install
+}
