@@ -1,0 +1,18 @@
+
+src_configure(){
+  hconf --prefix=/usr --enable-cxx --enable-mpbsd
+}
+
+src_compile(){
+  make
+  src_test
+}
+
+src_test(){
+  make check 2>&1 | tee gmp-check-log
+  awk '/tests passed/{total+=$2} ; END{print total}' gmp-check-log
+}
+
+install(){
+  make DESTDIR=${D} install
+}

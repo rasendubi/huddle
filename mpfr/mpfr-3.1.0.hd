@@ -1,0 +1,17 @@
+
+src_prepare(){
+  patch -Np1 -i ${PD}/files/mpfr-3.1.0-fixes-1.patch
+}
+
+src_configure(){
+  hconf --prefix=/usr --enable-thread-safe \
+  --docdir=/usr/share/doc/mpfr-3.1.0
+}
+
+src_compile(){
+  make
+}
+
+install(){
+  make DESTDIR=${D} install
+}

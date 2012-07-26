@@ -1,0 +1,63 @@
+
+src_prepare(){
+  
+  DL=$(readelf -l /bin/sh | sed -n 's@.*interpret.*/tools\(.*\)]$@\1@p')
+  sed -i "s|libs -o|libs -L/usr/lib -Wl,-dynamic-linker=$DL -o|" \
+        scripts/test-installation.pl
+  unset DL
+
+  sed -i -e 's/"db1"/& \&\& $name ne "nss_test1"/' scripts/test-installation.pl
+  sed -i 's|@BASH@|/bin/bash|' elf/ldd.bash.in
+
+  #Fix a couple of bugs in Glibc that can cause crashes and core dumps
+  patch -Np1 -i ${PD}/files/glibc-2.14.1-fixes-1.patch
+  patch -Np1 -i ${PD}/files/glibc-2.14.1-sort-1.patch
+
+  #Fix a bug that prevents Glibc from building with GCC-4.6.2
+  patch -Np1 -i ${PD}/files/glibc-2.14.1-gcc_fix-1.patch
+
+  #Fix a stack imbalance that occurs under some conditions
+  sed -i '195,213 s/PRIVATE_FUTEX/FUTEX_CLOCK_REALTIME/' \
+  nptl/sysdeps/unix/sysv/linux/x86_64/pthread_rwlock_timed{rd,wr}lock.S
+}
+
+src_configure(){
+  hconf --prefix=/usr \
+    --disable-profile --enable-add-ons \
+    --enable-kernel=2.6.25 --libexecdir=/usr/lib/glibc
+}
+
+src_compile(){
+  make
+}
+
+install(){
+  touch ${FR}/etc/ld.so.conf
+
+  make install_root=${D} install
+
+  cp ${S}/sunrpc/rpc/*.h ${D}/usr/include/rpc
+  cp ${S}/sunrpc/rpcsvc/*.h ${D}/usr/include/rpcsvc
+  cp ${S}/nis/rpcsvc/*.h ${D}/usr/include/rpcsvc
+}
+
+postinstall(){
+  mkdir -p /usr/lib/locale
+  localedef -i cs_CZ -f UTF-8 cs_CZ.UTF-8
+  localedef -i de_DE -f ISO-8859-1 de_DE
+  localedef -i de_DE@euro -f ISO-8859-15 de_DE@euro
+  localedef -i de_DE -f UTF-8 de_DE.UTF-8
+  localedef -i en_HK -f ISO-8859-1 en_HK
+  localedef -i en_PH -f ISO-8859-1 en_PH
+  localedef -i en_US -f ISO-8859-1 en_US
+  localedef -i en_US -f UTF-8 en_US.UTF-8
+  localedef -i es_MX -f ISO-8859-1 es_MX
+  localedef -i fa_IR -f UTF-8 fa_IR
+  localedef -i fr_FR -f ISO-8859-1 fr_FR
+  localedef -i fr_FR@euro -f ISO-8859-15 fr_FR@euro
+  localedef -i fr_FR -f UTF-8 fr_FR.UTF-8
+  localedef -i it_IT -f ISO-8859-1 it_IT
+  localedef -i ja_JP -f EUC-JP ja_JP
+  localedef -i tr_TR -f UTF-8 tr_TR.UTF-8
+  localedef -i zh_CN -f GB18030 zh_CN.GB18030
+}

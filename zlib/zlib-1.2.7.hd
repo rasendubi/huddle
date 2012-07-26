@@ -1,0 +1,17 @@
+
+src_configure(){
+  hconf --prefix=/usr
+}
+
+src_compile(){
+  make
+}
+
+install(){
+  make DESTDIR=${D} install
+}
+
+postinstall(){
+  mv -v /usr/lib/libz.so.* /lib
+  ln -sfv ../../lib/libz.so.${PV} /usr/lib/libz.so
+}

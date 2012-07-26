@@ -1,0 +1,26 @@
+
+src_prepare()
+{
+  rm -fv etc/standards.info
+  sed -i.bak '/^INFO/s/standards.info //' etc/Makefile.in
+
+  sed -i "/exception_defines.h/d" ld/testsuite/ld-elf/new.cc
+  sed -i "s/-fvtable-gc //" ld/testsuite/ld-selective/selective.exp
+}
+
+src_configure(){
+  hconf --prefix=/usr --enable-shared
+}
+
+src_compile(){
+  make tooldir=/usr
+}
+
+src_test(){
+  make -k check
+}
+
+install(){
+  make tooldir=/usr DESTDIR=${D} install
+  cp ${S}/include/libiberty.h ${D}/usr/include
+}

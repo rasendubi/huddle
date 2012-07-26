@@ -1,0 +1,16 @@
+
+S=${work}/linux-${PV}
+
+src_unpack(){
+  tar xf ${PD}/files/linux-${PV}.tar.xz -C ${work}
+}
+
+src_compile(){
+  make -C ${S} headers_check;
+}
+
+install(){
+  make -C ${S} INSTALL_HDR_PATH=${D}/usr headers_install;
+  find ${D}/usr/include \( -name ,install -o -name ..install.cmd \) -delete;
+}
+
