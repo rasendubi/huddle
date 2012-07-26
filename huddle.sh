@@ -100,8 +100,8 @@ if [ `echo ${P} | grep -c ^[A-Za-z-]-[0-9].*` -eq 0 ]; then
   fi
 fi
 
-PN=`echo ${P} | sed 's/^\([A-Za-z-]*\)-[0-9].*$/\1/'`
-PV=`echo ${P} | sed 's/^[A-Za-z-]*-\([0-9].*\)$/\1/'`
+PN=`echo ${P} | sed 's/^\([A-Za-z0-9-]*\)-[0-9].*$/\1/'`
+PV=`echo ${P} | sed 's/^[A-Za-z0-9-]*-\([0-9].*\)$/\1/'`
 PD=$HuddleRoot/$PN
 installed=`grep ^$PN-[0-9].*$ ${IP}/installed || true`
 if [ "X$installed" != "X" ]; then
