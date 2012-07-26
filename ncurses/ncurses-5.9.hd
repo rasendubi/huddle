@@ -1,0 +1,23 @@
+
+src_configure(){
+  hconf --prefix=/usr --with-shared --without-debug --enable-widec
+}
+
+src_compile(){
+  make
+}
+
+install(){
+  make DESTDIR=${D} install
+  mkdir ${D}/lib
+
+  mv -v ${D}/usr/lib/libncursesw.so.5* ${D}/lib
+  ln -sfv ../../lib/libncursesw.so.5 ${D}/usr/lib/libncursesw.so
+
+  for lib in ncurses form panel menu ; do \
+      rm -vf ${D}/usr/lib/lib${lib}.so ; \
+      echo "INPUT(-l${lib}w)" >${D}/usr/lib/lib${lib}.so ; \
+      ln -sfv lib${lib}w.a ${D}/usr/lib/lib${lib}.a ; \
+  done
+  ln -sfv libncurses++w.a ${D}/usr/lib/libncurses++.a
+}
