@@ -1,0 +1,27 @@
+
+src_configure(){
+  PKG_CONFIG=true LDFLAGS="-lblkid -luuid" \
+    hconf --prefix=/usr --with-root-prefix="" \
+    --enable-elf-shlibs --disable-libblkid --disable-libuuid \
+    --disable-uuidd --disable-fsck
+}
+
+src_compile(){
+  make
+}
+
+src_test(){
+  make check
+}
+
+install(){
+  make DESTDIR=${D} install
+  make DESTDIR=${D} install-libs
+  chmod -v u+w ${D}/usr/lib/{libcom_err,libe2p,libext2fs,libss}.a
+}
+
+postinstall(){
+  gunzip -v /usr/share/info/libext2fs.info.gz
+  install-info --dir-file=/usr/share/info/dir \
+               /usr/share/info/libext2fs.info
+}
