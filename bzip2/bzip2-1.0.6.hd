@@ -1,0 +1,30 @@
+
+B=${S}
+
+src_prepare(){
+  patch -Np1 -i ${PD}/files/bzip2-1.0.6-install_docs-1.patch
+  sed -i 's@\(ln -s -f \)$(PREFIX)/bin/@\1@' Makefile
+}
+
+src_configure(){
+  make -f Makefile-libbz2_so
+  make clean
+}
+
+src_compile(){
+  make
+}
+
+install(){
+  make PREFIX=${D}/usr install
+  mkdir ${D}/bin ${D}/lib
+  cp -v bzip2-shared ${D}/bin/bzip2
+  cp -av libbz2.so* ${D}/lib
+}
+
+postinstall(){
+  ln -sv ../../lib/libbz2.so.1.0 /usr/lib/libbz2.so
+  rm -v /usr/bin/{bunzip2,bzcat,bzip2}
+  ln -sv bzip2 /bin/bunzip2
+  ln -sv bzip2 /bin/bzcat
+}
