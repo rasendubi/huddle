@@ -1,0 +1,17 @@
+
+src_configure(){
+  hconf --prefix=/usr
+}
+
+src_compile(){
+  make
+}
+
+install(){
+  make DESTDIR=${D} install
+
+  mkdir -p ${D}/bin
+  mv -v ${D}/usr/bin/fuser ${D}/bin
+  mv -v ${D}/usr/bin/killall ${D}/bin
+}
+
