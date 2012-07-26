@@ -7,6 +7,8 @@ tmp=/var/tmp/huddle
 PackD=${HuddleRoot}/packages
 IP=${HuddleRoot}/installed
 
+dotest=true
+
 initf()
 {
   hconf(){
@@ -23,6 +25,9 @@ initf()
   }
   src_compile(){
     return
+  }
+  src_test(){
+    true
   }
   install(){
     return
@@ -54,6 +59,11 @@ mkpkg(){
     echo -n "Compiling... "
     src_compile
     echo "Done"
+    if $dotest; then
+      echo -n "Testing... "
+      src_test
+      echo "Done"
+    fi
     echo -n "Installing in pkg... "
     install
     echo -n "Tarring... "

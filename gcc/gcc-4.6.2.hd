@@ -18,12 +18,10 @@ src_configure(){
 
 src_compile(){
   make
-  src_test
 }
 
 src_test(){
   ulimit -s 16384
-  make -k check
   ${S}/contrib/test_summary
 }
 

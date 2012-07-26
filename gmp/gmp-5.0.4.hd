@@ -5,7 +5,6 @@ src_configure(){
 
 src_compile(){
   make
-  src_test
 }
 
 src_test(){
