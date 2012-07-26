@@ -1,4 +1,7 @@
 
+#Build in source
+B=${S}
+
 src_configure(){
   hconf --prefix=/usr
 }
