@@ -1,0 +1,18 @@
+
+src_configure(){
+  hconf --prefix=/usr
+  echo '#define YYENABLE_NLS 1' >> lib/config.h
+}
+
+src_compile(){
+  make
+}
+
+src_test(){
+  make check
+}
+
+install(){
+  make DESTDIR=${D} install
+}
+
