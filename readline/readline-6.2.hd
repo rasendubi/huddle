@@ -1,0 +1,23 @@
+
+src_prepare(){
+  sed -i '/MV.*old/d' Makefile.in
+  sed -i '/{OLDSUFF}/c:' support/shlib-install
+  patch -Np1 -i ${PD}/files/readline-6.2-fixes-1.patch
+}
+
+src_configure(){
+  hconf --prefix=/usr --libdir=/lib
+}
+
+src_compile(){
+  make SHLIB_LIBS=-lncurses
+}
+
+install(){
+  make DESTDIR=${D} install
+  mkdir -p ${D}/usr/lib
+  mv -v ${D}/lib/lib{readline,history}.a ${D}/usr/lib
+  rm -v ${D}/lib/lib{readline,history}.so
+  ln -sfv ../../lib/libreadline.so.6 ${D}/usr/lib/libreadline.so
+  ln -sfv ../../lib/libhistory.so.6 ${D}/usr/lib/libhistory.so
+}
