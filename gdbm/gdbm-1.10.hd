@@ -1,0 +1,16 @@
+
+src_configure(){
+  hconf --prefix=/usr --enable-libgdbm-compat
+}
+
+src_compile(){
+  make
+}
+
+src_test(){
+  make check
+}
+
+install(){
+  make DESTDIR=${D} install
+}
