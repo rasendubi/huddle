@@ -1,0 +1,23 @@
+
+src_prepare(){
+  patch -Np1 -i ${PD}/files/bash-4.2-fixes-4.patch
+}
+
+src_configure(){
+  hconf --prefix=/usr --bindir=/bin \
+    --htmldir=/usr/share/doc/bash-4.2 --without-bash-malloc \
+    --with-installed-readline
+}
+
+src_compile(){
+  make
+}
+
+src_test(){
+  chown -Rv nobody .
+  su-tools nobody -s /bin/bash -c "make tests"
+}
+
+install(){
+  make DESTDIR=${D} install
+}
