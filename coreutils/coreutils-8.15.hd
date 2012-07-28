@@ -1,0 +1,39 @@
+
+src_prepare(){
+  case `uname -m` in
+    i?86 | x86_64) patch -Np1 -i ${PD}/files/coreutils-8.15-uname-1.patch ;;
+  esac
+  patch -Np1 -i ${PD}/files/coreutils-8.15-i18n-1.patch
+}
+
+src_configure(){
+  hconf --prefix=/usr \
+        --libexecdir=/usr/lib \
+        --enable-no-install-program=kill,uptime
+}
+
+src_compile(){
+  make
+}
+
+src_test(){
+  echo "dummy:x:1000:nobody" >> /etc/group
+  make NON_ROOT_USERNAME=nobody check-root
+  chown -Rv nobody .
+  chown -Rv nobody ${S}
+  su-tools nobody -s /bin/bash -c "make RUN_EXPENSIVE_TESTS=yes check"
+  sed -i '/dummy/d' /etc/group
+}
+
+install(){
+  make DESTDIR=${D} install
+  mkdir -p ${D}/bin
+  mv -v ${D}/usr/bin/{cat,chgrp,chmod,chown,cp,date,dd,df,echo} ${D}/bin
+  mv -v ${D}/usr/bin/{false,ln,ls,mkdir,mknod,mv,pwd,rm} ${D}/bin
+  mv -v ${D}/usr/bin/{rmdir,stty,sync,true,uname} ${D}/bin
+  mv -v ${D}/usr/bin/chroot ${D}/usr/sbin
+  mkdir -p ${D}/usr/share/man/man8/
+  mv -v ${D}/usr/share/man/man1/chroot.1 ${D}/usr/share/man/man8/chroot.8
+  sed -i s/\"1\"/\"8\"/1 ${D}/usr/share/man/man8/chroot.8
+  mv -v ${D}/usr/bin/{head,sleep,nice} ${D}/bin
+}
