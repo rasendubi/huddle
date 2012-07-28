@@ -1,0 +1,17 @@
+
+src_configure(){
+  hconf --prefix=/usr
+}
+
+src_compile(){
+  make
+}
+
+src_test(){
+  sed -i -e '41s/ENOENT/& || errno == EINVAL/' ${S}/tests/test-readlink.h
+  make check
+}
+
+install(){
+  make DESTDIR=${D} install
+}
