@@ -27,9 +27,7 @@ src_test(){
 
 install(){
   make DESTDIR=${D} install
+  ln -sv gcc ${D}/usr/bin/cc
+  ln -sv ../usr/bin/cpp ${D}/lib
 }
 
-postinstall(){
-  ln -sv ../usr/bin/cpp /lib
-  ln -sv gcc /usr/bin/cc
-}
