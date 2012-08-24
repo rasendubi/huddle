@@ -1,0 +1,16 @@
+
+B=${S}
+
+src_prepare() {
+  hpatch sysklogd-1.5-cross.patch
+}
+
+src_compile() {
+  make
+}
+
+install() {
+  hinstall BINDIR=/sbin
+  mkdir ${D}/etc
+  cp -v ${PD}/files/syslog.conf ${D}/etc/syslog.conf
+}

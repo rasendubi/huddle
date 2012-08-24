@@ -1,0 +1,95 @@
+diff -Naur sysklogd-1.5.orig/ksym_mod.c sysklogd-1.5/ksym_mod.c
+--- sysklogd-1.5.orig/ksym_mod.c	2008-01-22 10:06:15.000000000 -0500
++++ sysklogd-1.5/ksym_mod.c	2008-01-22 10:09:43.000000000 -0500
+@@ -199,10 +199,10 @@
+ 
+ 	while ( fgets(buf, sizeof(buf), ksyms) != NULL )
+ 	{
+-		if (num_syms > 0 && index(buf, '[') == NULL)
++		if (num_syms > 0 && strchr(buf, '[') == NULL)
+ 			continue;
+ 
+-		p = index(buf, ' ');
++		p = strchr(buf, ' ');
+ 
+ 		if ( p == NULL )
+ 			continue;
+@@ -399,11 +399,11 @@
+ 	static char *lastmodule = NULL;
+ 	struct Module *mp;
+ 
+-	module = index(line, '[');
++	module = strchr(line, '[');
+ 
+ 	if ( module != NULL )
+ 	{
+-		p = index(module, ']');
++		p = strchr(module, ']');
+ 
+ 		if ( p != NULL )
+ 			*p = '\0';
+@@ -414,7 +414,7 @@
+ 		*(++p) = '\0';
+ 	}
+ 
+-	p = index(line, ' ');
++	p = strchr(line, ' ');
+ 
+ 	if ( p == NULL )
+ 		return(0);
+diff -Naur sysklogd-1.5.orig/Makefile sysklogd-1.5/Makefile
+--- sysklogd-1.5.orig/Makefile	2008-01-22 10:06:15.000000000 -0500
++++ sysklogd-1.5/Makefile	2008-01-22 10:12:17.000000000 -0500
+@@ -17,14 +17,14 @@
+ #   along with this program; if not, write to the Free Software
+ #   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ 
+-CC= gcc
++CC?= gcc
+ #SKFLAGS= -g -DSYSV -Wall
+ #LDFLAGS= -g
+-SKFLAGS= $(RPM_OPT_FLAGS) -O3 -DSYSV -fomit-frame-pointer -Wall -fno-strength-reduce
++SKFLAGS= $(CFLAGS) $(RPM_OPT_FLAGS) -DSYSV -fomit-frame-pointer -Wall -fno-strength-reduce
+ # -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
+ # -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE
+ # $(shell getconf LFS_SKFLAGS)
+-LDFLAGS= -s
++LDFLAGS?= -s
+ 
+ # Look where your install program is.
+ INSTALL = /usr/bin/install
+@@ -127,14 +127,16 @@
+ 	rm -f syslogd klogd ksym syslog_tst oops_test TAGS tsyslogd tklogd
+ 
+ install_exec: syslogd klogd
+-	${INSTALL} -m 500 -s syslogd ${BINDIR}/syslogd
+-	${INSTALL} -m 500 -s klogd ${BINDIR}/klogd
++	mkdir -p $(DESTDIR)${BINDIR}
++	${INSTALL} -m 500 syslogd $(DESTDIR)${BINDIR}/syslogd
++	${INSTALL} -m 500 klogd $(DESTDIR)${BINDIR}/klogd
+ 
+ install_man:
+-	${INSTALL} -o ${MAN_USER} -g ${MAN_GROUP} -m ${MAN_PERMS} sysklogd.8 ${MANDIR}/man8/sysklogd.8
+-	${INSTALL} -o ${MAN_USER} -g ${MAN_GROUP} -m ${MAN_PERMS} syslogd.8 ${MANDIR}/man8/syslogd.8
+-	${INSTALL} -o ${MAN_USER} -g ${MAN_GROUP} -m ${MAN_PERMS} syslog.conf.5 ${MANDIR}/man5/syslog.conf.5
+-	${INSTALL} -o ${MAN_USER} -g ${MAN_GROUP} -m ${MAN_PERMS} klogd.8 ${MANDIR}/man8/klogd.8
++	mkdir -p $(DESTDIR)${MANDIR}/man{5,8}
++	${INSTALL} -o ${MAN_USER} -g ${MAN_GROUP} -m ${MAN_PERMS} sysklogd.8 $(DESTDIR)${MANDIR}/man8/sysklogd.8
++	${INSTALL} -o ${MAN_USER} -g ${MAN_GROUP} -m ${MAN_PERMS} syslogd.8 $(DESTDIR)${MANDIR}/man8/syslogd.8
++	${INSTALL} -o ${MAN_USER} -g ${MAN_GROUP} -m ${MAN_PERMS} syslog.conf.5 $(DESTDIR)${MANDIR}/man5/syslog.conf.5
++	${INSTALL} -o ${MAN_USER} -g ${MAN_GROUP} -m ${MAN_PERMS} klogd.8 $(DESTDIR)${MANDIR}/man8/klogd.8
+ 
+ obj-m += oops.o
+ 
+diff -Naur sysklogd-1.5.orig/syslog.c sysklogd-1.5/syslog.c
+--- sysklogd-1.5.orig/syslog.c	2008-01-22 10:06:15.000000000 -0500
++++ sysklogd-1.5/syslog.c	2008-01-22 10:09:46.000000000 -0500
+@@ -191,7 +191,7 @@
+ 		return;
+ 	(void)strcat(tbuf, "\r\n");
+ 	cnt += 2;
+-	p = index(tbuf, '>') + 1;
++	p = strchr(tbuf, '>') + 1;
+ 	(void)write(fd, p, cnt - (p - tbuf));
+ 	(void)close(fd);
+ }
