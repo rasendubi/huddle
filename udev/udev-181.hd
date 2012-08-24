@@ -1,0 +1,42 @@
+
+src_prepare() {
+  tar -xvf ${PD}/files/udev-config-20100128.tar.bz2
+
+  /usr/bin/install -dv ${D}/lib/{firmware,udev/devices/pts}
+  mknod -m0666 ${D}/lib/udev/devices/null c 1 3
+}
+
+src_configure() {
+  BLKID_CFLAGS="-I/usr/include/blkid"  \
+  BLKID_LIBS="-L/lib -lblkid"          \
+  KMOD_CFLAGS="-I/usr/include"         \
+  KMOD_LIBS="-L/lib -lkmod"            \
+  hconf  --prefix=/usr           \
+         --with-rootprefix=''    \
+         --bindir=/sbin          \
+         --sysconfdir=/etc       \
+         --libexecdir=/lib       \
+         --enable-rule_generator \
+         --disable-introspection \
+         --disable-keymap        \
+         --disable-gudev         \
+         --with-usb-ids-path=no  \
+         --with-pci-ids-path=no  \
+         --with-systemdsystemunitdir=no
+}
+
+src_compile() {
+  make
+}
+
+src_test() {
+  make check
+}
+
+install() {
+  hinstall
+  rmdir -v ${D}/usr/share/doc/udev
+
+  cd ${S}/udev-config-20100128
+  hinstall
+}
