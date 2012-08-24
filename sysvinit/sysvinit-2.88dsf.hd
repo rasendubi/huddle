@@ -1,0 +1,18 @@
+
+B=${S}/src
+
+src_prepare() {
+  sed -i 's@Sending processes@& configured via /etc/inittab@g' \
+      src/init.c
+  sed -i -e 's/utmpdump wall/utmpdump/' \
+         -e '/= mountpoint/d' \
+         -e 's/mountpoint.1 wall.1//' src/Makefile
+}
+
+src_compile() {
+  make
+}
+
+install() {
+  make ROOT="${D}" install
+}
