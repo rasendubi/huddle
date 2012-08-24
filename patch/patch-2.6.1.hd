@@ -1,0 +1,20 @@
+
+src_prepare() {
+  hpatch patch-2.6.1-test_fix-1.patch
+}
+
+src_configure() {
+  hconf --prefix=/usr
+}
+
+src_compile() {
+  make
+}
+
+src_test() {
+  make check
+}
+
+install() {
+  hinstall
+}
