@@ -1,0 +1,16 @@
+
+src_configure() {
+  hconf --prefix=/usr --docdir=/usr/share/doc/${P}
+}
+
+src_compile() {
+  make
+}
+
+src_test() {
+  make check
+}
+
+install() {
+  hinstall
+}
