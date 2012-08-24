@@ -1,0 +1,16 @@
+
+src_configure() {
+  hconf --prefix=/usr
+}
+
+src_compile() {
+  make
+}
+
+src_test() {
+  make check
+}
+
+install() {
+  hinstall
+}
