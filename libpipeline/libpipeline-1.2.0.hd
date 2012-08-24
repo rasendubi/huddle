@@ -1,0 +1,17 @@
+
+src_configure() {
+  hconf CHECK_CFLAGS=-I/tools/include \
+        CHECK_LIBS="-L/tools/lib -lcheck" --prefix=/usr
+}
+
+src_compile() {
+  make
+}
+
+src_test() {
+  make check
+}
+
+install() {
+  hinstall
+}
