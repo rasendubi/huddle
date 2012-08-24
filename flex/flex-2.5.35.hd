@@ -1,0 +1,23 @@
+
+src_prepare() {
+  hpatch flex-2.5.35-gcc44-1.patch
+}
+
+src_configure() {
+  hconf --prefix=/usr
+}
+
+src_compile() {
+  make
+}
+
+src_test() {
+  make check
+}
+
+install() {
+  hinstall
+  ln -sv libfl.a ${D}/usr/lib/libl.a
+  cp ${PD}/files/lex ${D}/usr/bin/lex
+  chmod -v 755 ${D}/usr/bin/lex
+}
