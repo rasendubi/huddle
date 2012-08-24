@@ -1,0 +1,20 @@
+
+src_configure() {
+  hconf --prefix=/usr --libexecdir=/usr/lib/${PN} \
+        --localstatedir=/var/lib/locate
+}
+
+src_compile() {
+  make
+}
+
+src_test() {
+  make check
+}
+
+install() {
+  hinstall
+  mkdir -p ${D}/bin
+  mv -v ${D}/usr/bin/find ${D}/bin
+  sed -i 's/find:=${BINDIR}/find:=\/bin/' ${D}/usr/bin/updatedb
+}
