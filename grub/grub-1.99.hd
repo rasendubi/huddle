@@ -1,0 +1,16 @@
+
+src_configure() {
+ hconf --prefix=/usr           \
+       --sysconfdir=/etc      \
+       --disable-grub-emu-usb \
+       --disable-efiemu       \
+       --disable-werror
+}
+
+src_compile() {
+  make
+}
+
+install() {
+  hinstall
+}
