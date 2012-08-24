@@ -1,0 +1,19 @@
+
+B=${S}
+
+src_prepare() {
+  sed -i '/^TARGETS/s@arpd@@g' misc/Makefile
+  sed -i /ARPD/d Makefile
+  rm man/man8/arpd.8
+  sed -i -e '/netlink\//d' ip/ipl2tp.c
+}
+
+src_compile() {
+  make DESTDIR=
+}
+
+install() {
+  hinstall MANDIR=/usr/share/man \
+           DOCDIR=/usr/share/doc/${P}
+}
+
