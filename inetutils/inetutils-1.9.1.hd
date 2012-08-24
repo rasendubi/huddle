@@ -1,0 +1,23 @@
+
+src_configure(){
+  hconf --prefix=/usr --libexecdir=/usr/sbin \
+        --localstatedir=/var --disable-ifconfig \
+        --disable-logger --disable-syslogd --disable-whois \
+        --disable-servers
+}
+
+src_compile(){
+  make
+}
+
+src_test(){
+  make check
+}
+
+install(){
+  make DESTDIR=${D} install
+  mkdir ${D}/bin
+  mkdir ${D}/sbin
+  mv -v ${D}/usr/bin/{hostname,ping,ping6} ${D}/bin
+  mv -v ${D}/usr/bin/traceroute ${D}/sbin
+}
