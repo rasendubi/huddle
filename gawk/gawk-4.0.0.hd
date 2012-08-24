@@ -1,0 +1,16 @@
+
+src_configure() {
+  hconf --prefix=/usr --libexecdir=/usr/lib
+}
+
+src_compile() {
+  make
+}
+
+src_test() {
+  make check
+}
+
+install() {
+  hinstall
+}
