@@ -1,0 +1,22 @@
+
+src_configure() {
+  PKG_CONFIG=/tools/bin/true \
+  libpipeline_CFLAGS='' \
+  libpipeline_LIBS='-lpipeline' \
+  hconf --prefix=/usr --libexecdir=/usr/lib \
+  --docdir=/usr/share/doc/man-db-2.6.1 --sysconfdir=/etc \
+  --disable-setuid --with-browser=/usr/bin/lynx \
+  --with-vgrind=/usr/bin/vgrind --with-grap=/usr/bin/grap
+}
+
+src_compile() {
+  make
+}
+
+src_test() {
+  make check
+}
+
+install() {
+  hinstall
+}
