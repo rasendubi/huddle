@@ -1,0 +1,12 @@
+
+src_configure() {
+  hconf --prefix=/usr --sysconfdir=/etc
+}
+
+src_compile() {
+  make
+}
+
+install() {
+  hinstall
+}
