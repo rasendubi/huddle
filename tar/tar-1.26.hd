@@ -1,0 +1,17 @@
+
+src_configure() {
+  FORCE_UNSAFE_CONFIGURE=1 hconf --prefix=/usr \
+    --bindir=/bin --libexecdir=/usr/sbin
+}
+
+src_compile() {
+  make
+}
+
+src_test() {
+  make check
+}
+
+install() {
+  hinstall
+}
