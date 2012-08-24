@@ -1,0 +1,19 @@
+
+src_configure() {
+  hconf --prefix=/usr --bindir=/bin
+}
+
+src_compile() {
+  make
+}
+
+src_test() {
+  make check
+}
+
+install() {
+  hinstall
+  mkdir -pv ${D}/usr/bin
+  mv -v ${D}/bin/{gzexe,uncompress,zcmp,zdiff,zegrep} ${D}/usr/bin
+  mv -v ${D}/bin/{zfgrep,zforce,zgrep,zless,zmore,znew} ${D}/usr/bin
+}
