@@ -14,6 +14,9 @@ initf()
   hconf(){
     ${S}/configure $@
   }
+  hinstall(){
+    make DESTDIR=${D} install
+  }
   src_unpack(){
     tar xf ${PD}/files/${P}.tar* -C ${work}
   }
@@ -76,6 +79,9 @@ mkpkg(){
 }
 
 pkginstall(){
+  #tar Tvf ${PackD}/${P}.tar > ${tmp}/${P}.files
+  #egrep -e "/$" ${tmp}/${P}.files > ${tmp}/${P}.dirs
+  #sed -e "/\/$/d" -i ${tmp}/${P}.files
   echo -n "Installing... "
   tar xvkf ${PackD}/${P}.tar -C / > ${IP}/${P}.files
   echo ${P} >> ${IP}/installed
