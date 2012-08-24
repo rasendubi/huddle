@@ -17,6 +17,9 @@ initf()
   hinstall(){
     make DESTDIR=${D} install
   }
+  hpatch(){
+    patch -Np1 -i ${PD}/files/$1
+  }
   src_unpack(){
     tar xf ${PD}/files/${P}.tar* -C ${work}
   }
