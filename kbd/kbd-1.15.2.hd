@@ -1,0 +1,18 @@
+
+src_prepare() {
+  hpatch kbd-1.15.2-backspace-1.patch
+}
+
+src_configure() {
+  hconf --prefix=/usr --datadir=/lib/kbd
+}
+
+src_compile() {
+  make
+}
+
+install() {
+  hinstall
+  mkdir ${D}/bin
+  mv -v ${D}/usr/bin/{kbd_mode,loadkeys,openvt,setfont} ${D}/bin
+}
