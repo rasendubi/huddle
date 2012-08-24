@@ -1,0 +1,14 @@
+
+src_configure() {
+  PAGE=A4 hconf --prefix=/usr
+}
+
+src_compile() {
+  make
+}
+
+install() {
+  hinstall
+  ln -sv eqn ${D}/usr/bin/geqn
+  ln -sv tbl ${D}/usr/bin/gtbl
+}
