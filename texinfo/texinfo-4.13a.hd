@@ -1,0 +1,21 @@
+
+S=${work}/texinfo-4.13
+
+src_configure() {
+  hconf --prefix=/usr
+}
+
+src_compile() {
+  make
+}
+
+src_test() {
+  make check
+}
+
+install() {
+  hinstall
+  make DESTDIR="${D}" TEXMF="/usr/share/texmf" install-tex
+}
+
+
