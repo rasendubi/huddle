@@ -12,10 +12,10 @@ dotest=true
 initf()
 {
   hconf(){
-    ${S}/configure $@
+    ${S}/configure "$@"
   }
   hinstall(){
-    make DESTDIR=${D} $@ install
+    make DESTDIR=${D} "$@" install
   }
   hpatch(){
     patch -Np1 -i ${PD}/files/$1
