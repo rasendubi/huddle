@@ -1,0 +1,26 @@
+
+src_configure() {
+  liblzma_CFLAGS="-I/usr/include" \
+  liblzma_LIBS="-L/lib -llzma"    \
+  zlib_CFLAGS="-I/usr/include"    \
+  zlib_LIBS="-L/lib -lz"          \
+  hconf --prefix=/usr --bindir=/bin --libdir=/lib --sysconfdir=/etc \
+        --with-xz     --with-zlib
+}
+
+src_compile() {
+  make
+}
+
+src_test() {
+  make check
+}
+
+install() {
+  hinstall pkgconfigdir=/usr/lib/pkgconfig
+  mkdir ${D}/sbin
+  for target in depmod insmod modinfo modprobe rmmod; do
+    ln -sv ../bin/kmod ${D}/sbin/$target
+  done
+  ln -sv kmod ${D}/bin/lsmod
+}
