@@ -1,0 +1,27 @@
+
+S="${work}/vim73"
+B="${S}"
+
+src_prepare() {
+  #hpatch vim-7.3-fixes-524.patch
+  echo '#define SYS_VIMRC_FILE "/etc/vimrc"' >> src/feature.h
+}
+
+src_configure() {
+  ./configure --prefix=/usr --enable-multibyte
+}
+
+src_compile() {
+  make
+}
+
+install() {
+  hinstall
+  ln -sv vim ${D}/usr/bin/vi
+  for L in  ${D}/usr/share/man/{,*/}man1/vim.1; do
+      ln -sv vim.1 $(dirname $L)/vi.1
+  done
+
+  mkdir ${D}/etc
+  cp ${PD}/files/vimrc ${D}/etc/vimrc
+}
